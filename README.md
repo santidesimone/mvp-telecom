@@ -1,6 +1,8 @@
 # SpringBoot + Infinispan 
 
-This SpringBoot base project implements the Infinispan library for Java in the embedded mode. It allows you to manage a data Cache (creating cachés, managing their entire lifecycle, grouping its data, updating it, and making all differents kinds of querying).
+This SpringBoot base project implements the Infinispan library for Java in the embedded mode. 
+
+It also exemplifies how to manage a data Cache: creating cachés, managing their entire lifecycle, grouping its data, updating it, and making differents kinds of querying.
 
 ## Needed: 
 
