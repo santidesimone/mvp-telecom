@@ -83,6 +83,13 @@ public class Application {
       cache.put("Area10", area10);
 
 
+      System.out.println("");
+      System.out.println("------------------");
+      System.out.println("ADDED 10 AREA OBJECTS TO THE CACHE");
+      System.out.println("CACHE SIZE: " + cache.size());
+      System.out.println("");
+
+
       // Obtain a query factory for the cache
       QueryFactory queryFactory = Search.getQueryFactory(cache);
 
