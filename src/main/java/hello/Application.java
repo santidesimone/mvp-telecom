@@ -15,8 +15,34 @@ import static org.telecom.infinispan.cache.solution.util.Assert.assertTrue;
 
 import static org.infinispan.eviction.EvictionStrategy.LIRS;
 
+
+// import org.infinispan.query.Search;
+// import org.infinispan.query.SearchManager;
+// import org.apache.lucene.search.Query;
+
+// import org.infinispan.query.CacheQuery;
+
+// For searches that do not require Lucene or full-text capabilities 
+// and are mostly about aggregation and exact matches, 
+// we can use the Infinispan Query DSL API:
+// import org.infinispan.query.Search;
+// import org.infinispan.query.dsl.QueryFactory;
+// import org.infinispan.query.dsl.Query;
+
+import java.util.List; 
+
+// import org.infinispan.query.Search;
+// import org.infinispan.query.dsl.*;
+
+import org.infinispan.query.Search;
+import org.infinispan.query.dsl.*;
+
+
 public class Application {
    public static void main(String args[]) throws Exception {
+
+      // Cache<Object, Object> cache = new DefaultCacheManager("infinispan.xml").getCache("xml-configured-cache");
+      // Cache<Object, Object> cache = new DefaultCacheManager(Application.class.getResourceAsStream("/infinispan.xml")).getCache("xml-configured-cache");
 
       EmbeddedCacheManager manager = new DefaultCacheManager();
 
@@ -58,6 +84,85 @@ public class Application {
       System.out.println("cache.size() is: " + cache.size() );
       System.out.println("--------------------------------------");
       System.out.println("");
+
+      // // get the DSL query factory, to be used for constructing the Query object:
+      // QueryFactory qf = Search.getQueryFactory(cache);
+      // // create a query for all the areas that have a title which contains the word "engine":
+      // Query query = qf.from(Area.class)
+      //    .having("name").like("%CORDOBA%")
+      //    .toBuilder().build();
+      // // get the results
+      // List<Area> list = query.list();
+
+      // for(int i=0;i<list.size();i++){
+      //    System.out.println(list.get(i));
+      // } 
+
+      // get the DSL query factory, to be used for constructing the Query object:
+      // QueryFactory qf = Search.getQueryFactory(cache);
+      // // create a query for all the areas that have a title which contains the word "engine":
+      // Query query = qf.from(Area.class)
+      //    .having("name").like("%CORDOBA%")
+      //    .toBuilder().build();
+      // // get the results
+      // List<Area> list = query.list();
+
+      // for(int i=0;i<list.size();i++){
+      //    System.out.println(list.get(i));
+      // } 
+
+
+      // QueryFactory queryFactory = Search.getQueryFactory(cache);
+      // // Defining a query to search for various authors and publication years
+      // Query query = queryFactory.from(Area.class)
+      //     .select("name")
+      //     .having("alias").eq(Expression.param("aliasValue"))
+      //     .and()
+      //     .having("type").eq(Expression.param("typeValue"))
+      //     .build();
+      
+      // // Set actual parameter values
+      // query.setParameter("aliasValue", "CB");
+      // query.setParameter("typeValue", "Provincia");
+      
+      // // Execute the query
+      // List<Area> list = query.list();
+
+      // for(int i=0;i<list.size();i++){
+      //    System.out.println(list.get(i));
+      // } 
+
+
+      // get the query factory:
+      // QueryFactory queryFactory = Search.getQueryFactory(cache);
+
+      // Query q = queryFactory.from(Area.class)
+      //             .having("name").eq("CORDOBA")
+      //             .build();
+
+      // List<Area> list = q.list();
+
+      // for(int i=0;i<list.size();i++){
+      //    System.out.println(list.get(i));
+      // } 
+
+
+      // Running Lucene queries - START
+      // SearchManager searchManager = Search.getSearchManager(cache);
+      
+      // Query query = searchManager.buildQueryBuilderForClass(Area.class).get()
+      //       .keyword().wildcard().onField("alias").matching("*CB*").createQuery();
+      
+      // CacheQuery<Area> cacheQuery = searchManager.getQuery(query);
+
+      // try {
+      //    System.out.println(cacheQuery.toString());
+      // }
+      //  catch(Exception e) {
+      //    System.out.println("Lucene query didn't work");
+      //  }
+      
+      // Running Lucene queries - END
 
 
 

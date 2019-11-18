@@ -1,8 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<infinispan xmlns="urn:infinispan:config:9.4">
-    <cache-container>
-        <jmx domain="infinispan.embedded.example"/>
-        <local-cache name="basque-names" statistics="true"/>
-        <local-cache name="other"/>
-    </cache-container>
+<infinispan
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:infinispan:config:7.0 http://www.infinispan.org/schemas/infinispan-config-7.0.xsd"
+        xmlns="urn:infinispan:config:7.0">
+
+   <cache-container default-cache="default">
+       <local-cache name="xml-configured-cache">
+          <eviction strategy="LIRS" max-entries="10" />
+       </local-cache>
+   </cache-container>
 </infinispan>
