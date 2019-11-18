@@ -67,42 +67,94 @@ public class Application {
       cache.put("Area2", area2);
       Area area3 = new Area("CORDOBA", "CB", "Provincia");
       cache.put("Area3", area3);
+      Area area4 = new Area("CORDOBA CAPITAL", "CB", "Localidad");
+      cache.put("Area4", area4);
+      Area area5 = new Area("SAN JUAN", "SJ", "Provincia");
+      cache.put("Area5", area5);
+      Area area6 = new Area("SAN MARTIN", "SM", "Partido");
+      cache.put("Area6", area6);
+      Area area7 = new Area("CAPITAN JUAN DE SAN MARTIN", "CJSM", "Localidad");
+      cache.put("Area7", area7);
+      Area area8 = new Area("CORRIENTES", "CR", "Provincia");
+      cache.put("Area8", area8);
+      Area area9 = new Area("BUENOS AIRES", "BSAS", "Provincia");
+      cache.put("Area9", area9);
+      Area area10 = new Area("JUJUY", "JJ", "Provincia");
+      cache.put("Area10", area10);
 
-      // Trying to query the data
 
-      // ERROR OCURRS WHILE EXECUTING THE FOLLOWING CODE:
-
-      // get the DSL query factory, to be used for constructing the Query object:
-      // QueryFactory qf = Search.getQueryFactory(cache);
-      // // create a query for all the areas that have a title which contains the word "engine":
-      // Query query = qf.from(Area.class)
-      //    .having("name").like("%CORDOBA%")
-      //    .toBuilder().build();
-      // // get the results
-      // List<Area> list = query.list();
-
-      // for(int i=0;i<list.size();i++){
-      //    System.out.println(list.get(i));
-      // } 
-
-      // MAYBE A PROBLEM WITH DEPENDENCIES DECLARED IN POM.XML?
-      // MAYBE org.infinispan.query IMPORTS ARE NOT PROPERLY IMPORTED?
-      
-      
       // Obtain a query factory for the cache
       QueryFactory queryFactory = Search.getQueryFactory(cache);
+
+
+      // System.out.println("");
+      // System.out.println("------------------");
+      // System.out.println("GET ALL AREA OBJECTS");
+      // // Construct a query
+      // Class<?> type = conn.getType(cacheName);
+
+      // Query allQuery = queryFactory
+      //    .from(Area.class);
+      // // Execute the query
+      // List<Area> res = allQuery.list();
+      // // List the results
+      // res.forEach(area -> System.out.printf("Match: %s", area));
+      // System.out.println("");
+
+
+      System.out.println("");
+      System.out.println("------------------");
+      System.out.println("GET AREA OBJECTS HAVING PROPERTY NAME PROPERTY = CORDOBA");
+
+
       // Construct a query
       Query query = queryFactory.from(Area.class).having("name").eq("CORDOBA").toBuilder().build();
       // Execute the query
       List<Area> matches = query.list();
       // List the results
       matches.forEach(area -> System.out.printf("Match: %s", area));
+      System.out.println("");
 
       // Stop the cache manager and release all resources
       // cacheManager.stop();
+
+      System.out.println("");
+      System.out.println("------------------");
+      System.out.println("GET AREA OBJECTS MATCHING %COR% IN PROPERTY NAME");
+
+      // get the DSL query factory, to be used for constructing the Query object:
+      // QueryFactory qf = Search.getQueryFactory(cache);
+      // // create a query for all the areas that have a title which contains the word "engine":
+      Query newQuery = queryFactory.from(Area.class)
+         .having("name").like("%COR%")
+         .toBuilder().build();
+      // // get the results
+      List<Area> list = newQuery.list();
+      // list.forEach(area -> System.out.printf("Match: %s", area));
+      for(int i=0;i<list.size();i++){
+         System.out.println(list.get(i));
+      } 
+
+      System.out.println("");
+      System.out.println("------------------");
+      System.out.println("GET AREA OBJECTS HAVING PROPERTY NAME LIKE %ISI%");
+
+      Query yetAnewQuery = queryFactory.from(Area.class)
+         .having("name")
+         .like("%ISI%") // .like("%A") .like("CQ%")
+         .toBuilder().build();
+      // // get the results
+      List<Area> result = yetAnewQuery.list();
+      result.forEach(area -> System.out.printf("Match: %s", area));
+
+
+      System.out.println("");
+      System.out.println("------------------");
+      System.out.println("");
 
 
    }
 
 }
+
 
