@@ -14,6 +14,7 @@ import static org.telecom.infinispan.cache.solution.util.Assert.assertTrue;
 
 
 import static org.infinispan.eviction.EvictionStrategy.LIRS;
+
 public class Application {
    public static void main(String args[]) throws Exception {
       EmbeddedCacheManager manager = new DefaultCacheManager();
@@ -73,7 +74,7 @@ public class Application {
       assertTrue(cache.isEmpty());
       System.out.println("cache.isEmpty() results in : " + cache.isEmpty() );
       System.out.println("--------------------------------------");
-      System.out.println("")
+      System.out.println("");
 
 
       //By default entries are immortal but we can override this on a per-key basis and provide lifespans.
@@ -81,6 +82,10 @@ public class Application {
       assertTrue(cache.containsKey("key"));
       Thread.sleep(10000);
       assertFalse(cache.containsKey("key"));
+
+
+      Area area1 = new Area("TIGRE", "TG", "Partido");
+      System.out.println(area1.toString());
       
    }
 
