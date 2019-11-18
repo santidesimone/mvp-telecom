@@ -1,107 +1,88 @@
 package org.telecom.infinispan.cache.solution;
 
-import java.util.concurrent.TimeUnit;
-
 import org.infinispan.Cache;
-import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
-import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 
+
+
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.telecom.infinispan.cache.solution.util.Assert.assertEqual;
+import static org.telecom.infinispan.cache.solution.util.Assert.assertFalse;
+import static org.telecom.infinispan.cache.solution.util.Assert.assertTrue;
+
+
+import static org.infinispan.eviction.EvictionStrategy.LIRS;
 public class Application {
+   public static void main(String args[]) throws Exception {
+      EmbeddedCacheManager manager = new DefaultCacheManager();
+      manager.defineConfiguration("custom-cache", new ConfigurationBuilder()
+            .eviction().strategy(LIRS).maxEntries(10)
+            .build());
+      Cache<Object, Object> cache = manager.getCache("custom-cache");
 
-   static final String[] locations = { 
-         "Rome, Italy", "Como, Italy", "Basel, Switzerland", "Bern, Switzerland",
-         "London, UK", "Newcastle, UK", "Bucarest, Romania", "Cluj-Napoca, Romania", "Ottawa, Canada",
-         "Toronto, Canada", "Lisbon, Portugal", "Porto, Portugal", "Raleigh, USA", "Washington, USA" };
-   private final EmbeddedCacheManager cacheManager;
-   private final WeatherService weatherService;
-   private Cache<String, LocationWeather> cache;
-   // private final ClusterListener listener;
+      System.out.println("");
+      System.out.println("Add a entry");
+      cache.put("key", "value");
+      System.out.println("added 'key' as the key, and 'value' as the value for this entry");
+      System.out.println("--------------------------------------");
+      System.out.println("");
 
-   public Application() throws InterruptedException {
+      System.out.println("Validate the entry is now in the cache");
+      assertEqual(1, cache.size());
+      System.out.println("cache.size() is: " + cache.size() );
+      assertTrue(cache.containsKey("key"));
+      System.out.println("--------------------------------------");
+      System.out.println("");
 
-      GlobalConfigurationBuilder global = GlobalConfigurationBuilder.defaultClusteredBuilder();
-      global.transport().clusterName("WeatherApp");
 
-      cacheManager = new DefaultCacheManager(global.build());
 
-      // listener = new ClusterListener(2);
+      System.out.println("Remove the entry from the cache");
+      Object v = cache.remove("key");
+      System.out.println("--------------------------------------");
+      System.out.println("");
 
-      // cacheManager.addListener(listener);
 
-      ConfigurationBuilder config = new ConfigurationBuilder();
+      System.out.println("Validate the entry is no longer in the cache");
+      assertEqual("value", v);
+      assertTrue(cache.isEmpty());
+      System.out.println("cache.isEmpty() results in : " + cache.isEmpty() );
+      System.out.println("--------------------------------------");
+      System.out.println("");
 
-      config
-          .expiration().lifespan(5, TimeUnit.SECONDS)
-          .clustering().cacheMode(CacheMode.DIST_SYNC)
-              .hash().groups().enabled().addGrouper(new LocationWeather.LocationGrouper());
 
-      cacheManager.defineConfiguration("weather", config.build());
 
-      cache = cacheManager.getCache("weather");
+      System.out.println("Add an entry with the key 'key'");
+      cache.put("key", "value");
+      System.out.println("And replace its value only if the key missing");
+      cache.putIfAbsent("key", "newValue");
+      System.out.println("Validate that the new value was not added");
+      assertEqual("value", cache.get("key"));
+      System.out.println("cache.get('key') = " + cache.get("key") );
+      System.out.println("--------------------------------------");
+      System.out.println("");
 
-      // cache.addListener(new CacheListener());
 
-      // weatherService = initWeatherService(cache);
+      cache.clear();
+      assertTrue(cache.isEmpty());
 
-      // System.out.println("---- Waiting for cluster to form ----");
+      
+      System.out.println("cache.clear() was executed");
+      cache.clear();
+      assertTrue(cache.isEmpty());
+      System.out.println("cache.isEmpty() results in : " + cache.isEmpty() );
+      System.out.println("--------------------------------------");
+      System.out.println("")
 
-      // listener.clusterFormedLatch.await();
 
+      //By default entries are immortal but we can override this on a per-key basis and provide lifespans.
+      cache.put("key", "value", 5, SECONDS);
+      assertTrue(cache.containsKey("key"));
+      Thread.sleep(10000);
+      assertFalse(cache.containsKey("key"));
+      
    }
 
-   // private WeatherService initWeatherService(Cache<String,LocationWeather> cache) {
-   //    String apiKey = System.getenv("OWMAPIKEY");
-   //    System.out.println("WeatherService ------");
-
-   //    if (apiKey == null) {
-   //       System.out.println("WARNING: OWMAPIKEY environment variable not set, using the RandomWeatherService.");
-   //       return new RandomWeatherService(cache);
-   //    } else {
-   //       return new OpenWeatherMapService(apiKey, cache);
-   //    }
-   // }
-
-   // public void fetchWeather() {
-   //    System.out.println("---- Fetching weather information ----");
-   //    long start = System.currentTimeMillis();
-   //    for (String location : locations) {
-   //       LocationWeather weather = weatherService.getWeatherForLocation(location);
-   //       System.out.printf("%s - %s\n", location, weather);
-   //    }
-   //    System.out.printf("---- Fetched in %dms ----\n", System.currentTimeMillis() - start);
-   // }
-
-   // public void shutdown() throws InterruptedException {
-   //    if (!cacheManager.isCoordinator()) {
-   //       // listener.shutdownLatch.await();
-   //    }
-   //    cacheManager.stop();
-   // }
-
-   public static void main(String[] args) throws Exception {
-      Application app = new Application();
-
-   //    System.out.printf("main method");
-
-   //    if (app.cacheManager.isCoordinator()) {
-
-   //       System.out.printf("isCoordinator");
-
-   //       app.fetchWeather();
-
-   //       app.fetchWeather();
-
-   //       TimeUnit.SECONDS.sleep(5);
-
-   //       app.fetchWeather();
-   //    }
-
-   //    app.shutdown();
-   // }
-
 }
-
 
