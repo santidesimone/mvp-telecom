@@ -17,16 +17,17 @@ import static org.infinispan.eviction.EvictionStrategy.LIRS;
 
 public class Application {
    public static void main(String args[]) throws Exception {
+
       EmbeddedCacheManager manager = new DefaultCacheManager();
+
       manager.defineConfiguration("custom-cache", new ConfigurationBuilder()
-            .eviction().strategy(LIRS).maxEntries(10)
+            .eviction().strategy(LIRS).maxEntries(100)
             .build());
+
       Cache<Object, Object> cache = manager.getCache("custom-cache");
 
 
       Area area1 = new Area("TIGRE", "TG", "Partido");
-      // System.out.println(area1.toString());
-
 
       System.out.println("");
       System.out.println("Add a entry");
