@@ -34,8 +34,13 @@ import java.util.List;
 // import org.infinispan.query.Search;
 // import org.infinispan.query.dsl.*;
 
+// import org.infinispan.query.Search;
+// import org.infinispan.query.dsl.*;
+
+import org.infinispan.configuration.cache.Index;
 import org.infinispan.query.Search;
-import org.infinispan.query.dsl.*;
+import org.infinispan.query.dsl.Query;
+import org.infinispan.query.dsl.QueryFactory;
 
 
 public class Application {
@@ -63,28 +68,40 @@ public class Application {
       Area area3 = new Area("CORDOBA", "CB", "Provincia");
       cache.put("Area3", area3);
 
-      
       // Trying to query the data
 
       // ERROR OCURRS WHILE EXECUTING THE FOLLOWING CODE:
 
       // get the DSL query factory, to be used for constructing the Query object:
-      QueryFactory qf = Search.getQueryFactory(cache);
-      // create a query for all the areas that have a title which contains the word "engine":
-      Query query = qf.from(Area.class)
-         .having("name").like("%CORDOBA%")
-         .toBuilder().build();
-      // get the results
-      List<Area> list = query.list();
+      // QueryFactory qf = Search.getQueryFactory(cache);
+      // // create a query for all the areas that have a title which contains the word "engine":
+      // Query query = qf.from(Area.class)
+      //    .having("name").like("%CORDOBA%")
+      //    .toBuilder().build();
+      // // get the results
+      // List<Area> list = query.list();
 
-      for(int i=0;i<list.size();i++){
-         System.out.println(list.get(i));
-      } 
+      // for(int i=0;i<list.size();i++){
+      //    System.out.println(list.get(i));
+      // } 
 
       // MAYBE A PROBLEM WITH DEPENDENCIES DECLARED IN POM.XML?
       // MAYBE org.infinispan.query IMPORTS ARE NOT PROPERLY IMPORTED?
       
       
+      // Obtain a query factory for the cache
+      QueryFactory queryFactory = Search.getQueryFactory(cache);
+      // Construct a query
+      Query query = queryFactory.from(Area.class).having("name").eq("CORDOBA").toBuilder().build();
+      // Execute the query
+      List<Area> matches = query.list();
+      // List the results
+      matches.forEach(area -> System.out.printf("Match: %s", area));
+
+      // Stop the cache manager and release all resources
+      // cacheManager.stop();
+
+
    }
 
 }
